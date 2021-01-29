@@ -18,7 +18,7 @@ services:
     networks:
     - hawknet
     ports:
-    - "8080:8080"
+    - "8443:8443"
     deploy:
       restart_policy:
         condition: on-failure
@@ -28,26 +28,20 @@ services:
     - 'SPRING_RABBITMQ_HOST=rabbitmq'
     - 'SPRING_RABBITMQ_USERNAME=guest'
     - 'SPRING_RABBITMQ_PASSWORD=guest'
+    - 'HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_PROTOCOL=https'
+    - 'HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_PORT=8443'
+    - 'SECURITY_REQUIRE-SSL=true'
+    - 'SERVER_USE-FORWARD-HEADERS=true'
+    - 'SERVER_PORT=8443'
+    - 'SERVER_SSL_KEY-STORE=file:/opt/hawkbit/data/keystore.jks'
 
-  # ---------------------
-  # hawkBit simulator
-  # ---------------------
-  simulator:
-    image: "hawkbit/hawkbit-device-simulator:latest"
-    networks:
-    - hawknet
-    ports:
-    - "8083:8083"
-    deploy:
-      restart_policy:
-        condition: on-failure
-    environment:
-    - 'HAWKBIT_DEVICE_SIMULATOR_AUTOSTARTS_[0]_TENANT=DEFAULT'
-    - 'SPRING_RABBITMQ_VIRTUALHOST=/'
-    - 'SPRING_RABBITMQ_HOST=rabbitmq'
-    - 'SPRING_RABBITMQ_PORT=5672'
-    - 'SPRING_RABBITMQ_USERNAME=guest'
-    - 'SPRING_RABBITMQ_PASSWORD=guest'
+    env_file:
+    - .env-passwords
+    
+    volumes: 
+    - /opt/hawkbit/data:/opt/hawkbit/data
+
+
 
   # ---------------------
   # RabbitMQ service
