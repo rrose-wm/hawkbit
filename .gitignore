@@ -66,3 +66,6 @@ docs/themes/**
 docs/public/**
 docs/content/rest-api/*.html
 .gitmodules
+
+# Passwords
+hawkbit-runtime/docker/.env-passwords
